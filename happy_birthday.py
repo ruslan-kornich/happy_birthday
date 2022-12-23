@@ -2,18 +2,20 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 
-def main(users):
+def main(users: dict):
     users = transform_date(users)
     birthday_list = defaultdict(list)
     for name, birthday in users.items():
         delta = birthday - datetime.now()
-        if int(delta.days) in range(0, 6):
-            birthday_on_weekend(birthday)
+        if int(delta.days) == -1:
+            birthday_list[birthday.strftime("%A")].append(name)
+        elif int(delta.days) in range(0, 6):
+            birthday = birthday_on_weekend(birthday)
             birthday_list[birthday.strftime("%A")].append(name)
     output_birthday_list(birthday_list)
 
 
-def transform_date(users):
+def transform_date(users: dict) -> dict:
     """Function of counting the date of the people's birth until the day of the people's day at the current rotation"""
 
     current_year = (datetime.now()).year
@@ -22,7 +24,7 @@ def transform_date(users):
     return users
 
 
-def birthday_on_weekend(birthday):
+def birthday_on_weekend(birthday: datetime) -> datetime:
     """The function handles birthdays that fall on a holiday"""
 
     if birthday.strftime("%A") == "Saturday":
